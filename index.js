@@ -1,5 +1,5 @@
 const express = require("express");
-const bodyParse = require('body-parse');
+const bodyParse = require('body-parser');
 const cors = require('cors');
 
 var app = new express();
@@ -11,6 +11,8 @@ app.use( cors() );
 // todos os dados enviado pela api será em json
 app.use( bodyParse.json() );
 
+app.get('/', (req,res) => {
+    res('/')
+});
 
 app.listen( 3030, () => console.log( 'API NeeoClass' ) );
-
