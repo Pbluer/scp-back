@@ -1,5 +1,5 @@
-let Database = require('../dataBase/index');
-
+let dataBase = require('../dataBase/index');
+let Utils =  require('../utils/index')
 class User{
 
     async new( data ){
@@ -103,6 +103,7 @@ class User{
         }
     }
 
+
     async getByLogin( login ) {
 
         try{
@@ -155,10 +156,6 @@ class User{
         }catch( err ){
             console.log(err)
         }
-    }
-
-    async update(req,res){
-
     }
 
 }
