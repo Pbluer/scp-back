@@ -1,4 +1,4 @@
-let dataBase = require('../dataBase/index');
+let Database = require('../dataBase/index');
 let Utils =  require('../utils/index')
 class User{
 
@@ -157,6 +157,16 @@ class User{
         }
     }
 
+    async getAll(req,res){
+        
+        try{
+            let result = await Database('usuario').select('*');
+            res.json(result)
+        }catch( err ){
+            console.log(err)
+        }
+        
+    }
 }
 
 module.exports = new User()

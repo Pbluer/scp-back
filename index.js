@@ -7,7 +7,7 @@ let user =  require('./router/user');
 
 // evitará que ao acessar a api do mesmo lugar, tenha problemas
 app.use( cors() );
-
+app.use( bodyParse.urlencoded( { extended: false }) )
 // todos os dados enviado pela api será em json
 app.use( bodyParse.json() );
 
