@@ -160,8 +160,10 @@ class User{
     async getAll(req,res){
         
         try{
-            let result = await Database('usuario').select('*');
-            res.json(result)
+            let result = await Database('usuario',).select(['login','email']);
+
+            let data = result[0]
+            res.json(data)
         }catch( err ){
             console.log(err)
         }
