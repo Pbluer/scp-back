@@ -7,14 +7,15 @@ class Login{
         let { login,senha } = req.body
         
         if( !login ){
-            res.json({
+            return res.json({
                 status: 401,                
                 mensage: 'Login não informado.'
             })
+            
         }
 
         if( !senha ){
-            res.json({
+            return res.json({
                 status: 401,                
                 mensage: 'Senha não informado.'
             })
@@ -28,17 +29,17 @@ class Login{
                 login:login,
                 password: senhaEncrypt
             });
-
+            
             if( result[0] ){
 
-                res.json({
+                return res.json({
                     status: 200,
                     mensage: 'Usuário logado com sucesso.'
                 });
 
             }else{
 
-                res.json({
+                return res.json({
                     status: 401,
                     mensage: 'Usuário não cadastrado.'
                 });
@@ -47,7 +48,7 @@ class Login{
             
             
         }catch( err ){
-            res.json({
+            return res.json({
                 status: 400,
                 mensage: err.sqlMessage,
             });            
@@ -58,14 +59,14 @@ class Login{
         let { login,senha } = req.body;
 
         if( !login ){
-            res.json({
+            return res.json({
                 status: 401,                
                 mensage: 'Login não informado.'
             })
         }
 
         if( !senha ){
-            res.json({
+            return res.json({
                 status: 401,                
                 mensage: 'Senha não informado.'
             })
@@ -82,14 +83,14 @@ class Login{
 
           if( result[0] ){
 
-            res.json({
+            return res.json({
                 status: 200,
                 mensage: "Operação realizada com sucesso.",
               });
 
           }else{
 
-            res.json({
+            return res.json({
                 status: 400,
                 mensage: "Entre em contato com o suporte.",
             });
@@ -100,13 +101,13 @@ class Login{
 
             if( err.errno == 1062 ){
                 
-                res.json({
+                return res.json({
                   status: 401,
                   mensage: 'Usuário já cadastrado.',
                 });
 
             }else{
-                res.json({
+                return res.json({
                     status: 400,
                     mensage: err.sqlMessage,
                 });
@@ -128,12 +129,12 @@ class Login{
                 }).where({ codigo: codigo })
 
                 if( result[0] ){
-                    res.json({
+                    return res.json({
                         status: 200,
                         mensage: 'Operação realizada com sucesso.',
                     });
                 }else{
-                    res.json({
+                    return res.json({
                         status: 400,
                         mensage: 'Entre em contato com o suporte',
                     });
@@ -141,7 +142,7 @@ class Login{
 
             }catch(err){
                 
-                res.json({
+                return res.json({
                     status: 400,
                     mensage: err.sqlMessage ,
                 });
@@ -157,28 +158,28 @@ class Login{
         let { login,senha,email,nome } = req.body;
 
         if( !login ){
-            res.json({
+            return res.json({
                 status: 401,                
                 mensage: 'Login não informado.'
             })
         }
 
         if( !senha ){
-            res.json({
+            return res.json({
                 status: 401,                
                 mensage: 'Senha não informado.'
             })
         }
         
         if( !email ){
-            res.json({
+            return res.json({
                 status: 401,                
                 mensage: 'Email não informado.'
             })
         }
 
         if( !nome ){
-            res.json({
+            return res.json({
                 status: 401,                
                 mensage: 'Nome não informado.'
             })
@@ -197,20 +198,20 @@ class Login{
 
             if( result[0] ){
 
-                res.json({
+                return res.json({
                     status: 200,
                     mensage: "Operação realizada com sucesso.",
                 });
 
             }else{
-                res.json({
+                return res.json({
                     status: 400,
                     mensage: "Entre em contato com o suporte.",
                 });                                
             }
 
         }catch( err ){
-            res.json({
+            return res.json({
                 status: 400,
                 mensage: err.sqlMessage
             });
