@@ -1,49 +1,114 @@
-let Database = require('../dataBase/index');
+let database = require('../dataBase/index');
+const utils = require('../utils');
 
 class Login{
-
+    
     async login( req,res ){
-        console.log(req)
-
-        res.json({
-            status: 200,
-            mensage: 'Usuário logado com sucesso.'
-        })
+        let { login,password } = req.body
         
-        
-        /* if( !login ){
+        if( !login ){
             res.json({
                 status: 401,                
                 mensage: 'Login não informado.'
             })
         }
 
-        if( !senha ){
+        if( !password ){
             res.json({
                 status: 401,                
                 mensage: 'Senha não informado.'
             })
-        } */
+        }
+        
+        /* try{
 
+            let result = Database('usuario').select().where({
+                login:login,
+                password: senha
+            }).count('login');
+
+            
+        } */
+        
         res.json({
             status: 200,
             mensage: 'Usuário logado com sucesso.'
         })
+    }
+
+    async cadastro( req,res ){
+        let { login,password } = req.body;
+
+        if( !login ){
+            res.json({
+                status: 401,                
+                mensage: 'Login não informado.'
+            })
+        }
+
+        if( !password ){
+            res.json({
+                status: 401,                
+                mensage: 'Senha não informado.'
+            })
+        }
         
-        /* try{
+        let loginExiste = this.verificarLogin(login);
 
-            let result = Database('usuario').select(['login','password']).where({
-                login:login,
-                password: senha
-            });
+        if( !loginExiste ){
 
-            
+            let passwordEncrypt = await utils.md5(password);
+    
+            try{
+    
+                let result = await database('usuario').insert({
+                    login: login,
+                    password: passwordEncrypt
+                })
+    
+                let id = result[0];
+    
+                console.log(id)
+    
+                res.json({
+                    status:200,
+                    mensage: 'Operação realizada com sucesso.'
+                })
+    
+            }catch( err ){            
+                res.json({
+                    status: 401,
+                    mensage: err.sqlMessage
+                })
+            }
 
-        } */
+        }else{
+            res.json({
+                status: 400,
+                mensage: 'Usuário já cadastrado'
+            })
+        }
 
     }
 
-    async cadastro( req,res ){}
+    async verificarLogin( login ) {
+        
+        try{
+            let result = await database('usuario').select().where({ login: login })
+
+            if( result.length > 0 ){
+                return true
+            }else{
+                return false;
+            }
+
+        }catch( err ){
+            return {
+                status:400,
+                mensage:err.sqlMessage
+            }
+        }
+    }
 
     async desativar( req,res ){}
 
