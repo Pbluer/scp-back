@@ -3,8 +3,8 @@ const utils = require('../utils');
 
 class Login{
     
-    async login( req,res ){
-        let { login,password } = req.body
+    async acessar( req,res ){
+        let { login,senha } = req.body
         
         if( !login ){
             res.json({
@@ -13,31 +13,49 @@ class Login{
             })
         }
 
-        if( !password ){
+        if( !senha ){
             res.json({
                 status: 401,                
                 mensage: 'Senha não informado.'
             })
         }
         
-        /* try{
+        let senhaEncrypt = await utils.md5(senha);
 
-            let result = Database('usuario').select().where({
+        try{
+
+            let result = await database('usuario').select().where({
                 login:login,
-                password: senha
-            }).count('login');
+                password: senhaEncrypt
+            });
 
+            if( result[0] ){
+
+                res.json({
+                    status: 200,
+                    mensage: 'Usuário logado com sucesso.'
+                });
+
+            }else{
+
+                res.json({
+                    status: 401,
+                    mensage: 'Usuário não cadastrado.'
+                });
+
+            }
             
-        } */
-        
-        res.json({
-            status: 200,
-            mensage: 'Usuário logado com sucesso.'
-        })
+            
+        }catch( err ){
+            res.json({
+                status: 400,
+                mensage: err.sqlMessage,
+            });            
+        }
     }
 
     async cadastro( req,res ){
-        let { login,password } = req.body;
+        let { login,senha } = req.body;
 
         if( !login ){
             res.json({
@@ -46,73 +64,159 @@ class Login{
             })
         }
 
-        if( !password ){
+        if( !senha ){
             res.json({
                 status: 401,                
                 mensage: 'Senha não informado.'
             })
         }
         
-        let loginExiste = this.verificarLogin(login);
+        let senhaEncrypt = await utils.md5(senha);
 
-        if( !loginExiste ){
+        try {
 
-            let passwordEncrypt = await utils.md5(password);
-    
-            try{
-    
-                let result = await database('usuario').insert({
-                    login: login,
-                    password: passwordEncrypt
-                })
-    
-                let id = result[0];
-    
-                console.log(id)
-    
-                res.json({
-                    status:200,
-                    mensage: 'Operação realizada com sucesso.'
-                })
-    
-            }catch( err ){            
-                res.json({
-                    status: 401,
-                    mensage: err.sqlMessage
-                })
-            }
+          let result = await database("usuario").insert({
+            login: login,
+            password: senhaEncrypt,
+          });
 
-        }else{
+          if( result[0] ){
+
+            res.json({
+                status: 200,
+                mensage: "Operação realizada com sucesso.",
+              });
+
+          }else{
+
             res.json({
                 status: 400,
-                mensage: 'Usuário já cadastrado'
+                mensage: "Entre em contato com o suporte.",
+            });
+
+          }
+
+        } catch (err) {
+
+            if( err.errno == 1062 ){
+                
+                res.json({
+                  status: 401,
+                  mensage: 'Usuário já cadastrado.',
+                });
+
+            }else{
+                res.json({
+                    status: 400,
+                    mensage: err.sqlMessage,
+                });
+            }
+
+        }
+        
+    }
+
+    async desativar( req,res ){
+        let { codigo } = req.body;
+
+        if( codigo ){
+
+            try{
+
+                let result = database('usuario').update({
+                    ativo: 0
+                }).where({ codigo: codigo })
+
+                if( result[0] ){
+                    res.json({
+                        status: 200,
+                        mensage: 'Operação realizada com sucesso.',
+                    });
+                }else{
+                    res.json({
+                        status: 400,
+                        mensage: 'Entre em contato com o suporte',
+                    });
+                }
+
+            }catch(err){
+                
+                res.json({
+                    status: 400,
+                    mensage: err.sqlMessage ,
+                });
+
+            }
+            
+        }else{
+
+        }
+    }
+
+    async editar( req,res ){
+        let { login,senha,email,nome } = req.body;
+
+        if( !login ){
+            res.json({
+                status: 401,                
+                mensage: 'Login não informado.'
             })
         }
 
-    }
-
-    async verificarLogin( login ) {
+        if( !senha ){
+            res.json({
+                status: 401,                
+                mensage: 'Senha não informado.'
+            })
+        }
         
-        try{
-            let result = await database('usuario').select().where({ login: login })
+        if( !email ){
+            res.json({
+                status: 401,                
+                mensage: 'Email não informado.'
+            })
+        }
 
-            if( result.length > 0 ){
-                return true
+        if( !nome ){
+            res.json({
+                status: 401,                
+                mensage: 'Nome não informado.'
+            })
+        }
+
+        let senhaEncrypt = await utils.md5(senha);
+
+        try{
+            
+            let result = await database('usuario').where({ codigo: codigo }).update({
+                login: login,
+                password: senhaEncrypt,
+                email: email,
+                name: nome
+            });
+
+            if( result[0] ){
+
+                res.json({
+                    status: 200,
+                    mensage: "Operação realizada com sucesso.",
+                });
+
             }else{
-                return false;
+                res.json({
+                    status: 400,
+                    mensage: "Entre em contato com o suporte.",
+                });                                
             }
 
         }catch( err ){
-            return {
-                status:400,
-                mensage:err.sqlMessage
-            }
+            res.json({
+                status: 400,
+                mensage: err.sqlMessage
+            });
         }
+        
     }
-
-    async desativar( req,res ){}
-
-    async editar( req,res ){}
 }
 
 module.exports = new Login()
