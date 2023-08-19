@@ -161,14 +161,14 @@ class User{
     async getAll(req,res){
         
         try{
-            let result = await Database('usuario').select(['codigo','nome','cpf','dataNascimento']);
+            let results = await Database('usuario').select(['codigo','nome','cpf','dataNascimento']);
 
-            result.forEach( async (value,index) => {
+            for( let value of results ){
                 let dataNascimennto = value.dataNascimento;                
                 value.dataNascimento = await utils.formatDateSql(dataNascimennto);                                  
-            })
+            }
             
-            res.json(result)
+            res.json(results)
         }catch( err ){
             console.log(err)
         }
