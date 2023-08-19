@@ -1,4 +1,5 @@
 let Database = require('../dataBase/index');
+const utils = require('../utils/index');
 let Utils =  require('../utils/index')
 class User{
 
@@ -160,10 +161,14 @@ class User{
     async getAll(req,res){
         
         try{
-            let result = await Database('usuario',).select(['login','email']);
+            let result = await Database('usuario').select(['codigo','nome','cpf','dataNascimento']);
 
-            let data = result[0]
-            res.json(data)
+            result.forEach( async (value,index) => {
+                let dataNascimennto = value.dataNascimento;                
+                value.dataNascimento = await utils.formatDateSql(dataNascimennto);                                  
+            })
+            
+            res.json(result)
         }catch( err ){
             console.log(err)
         }

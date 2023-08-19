@@ -218,6 +218,73 @@ class Login{
         }
         
     }
+
+    async getByLogin( login ) {
+
+        try{
+            let result = await Database('usuario').select().where({ login: login })
+
+            if( result.length > 0 ){
+                return result
+            }else{
+                false;
+            }
+
+        }catch( err ){
+            return {
+                status:400,
+                mensage:err.sqlMessage
+            }
+        }
+    }
+
+    async getByEmail( email ) {
+
+        try{
+            let result = await Database('usuario').select().where({ email: email })
+
+            if( result.length ){
+                return reuslt
+            }else{
+                false;
+            }
+
+        }catch( err ){
+            return {
+                status:400,
+                mensage:err.sqlMessage
+            }
+        }
+    }
+
+    async getByName( name ) {
+
+        try{
+            let result = Database('usuario').select().where({ name: name })            
+            
+            if( result.length > 0 ){
+                return result
+            }else{
+                false;
+            }
+
+        }catch( err ){
+            console.log(err)
+        }
+    }
+
+    async getAll(req,res){
+        
+        try{
+            let result = await Database('usuario',).select(['login','email']);
+
+            let data = result[0]
+            res.json(data)
+        }catch( err ){
+            console.log(err)
+        }
+        
+    }
 }
 
 module.exports = new Login()

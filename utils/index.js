@@ -16,7 +16,7 @@ class Utils{
         let min =  date.getMinutes() > 9 ? date.getMinutes() : `0` + date.getMinutes();
         let sec =  date.getSeconds() > 9 ? date.getSeconds() : `0` + date.getSeconds();
 
-        return ` ${year}-${month}-${day} ${hour}:${min}:${sec}`;
+        return `${year}-${month}-${day} ${hour}:${min}:${sec}`;
     }
 
     async getDateSql() {
@@ -31,7 +31,16 @@ class Utils{
         return ` ${year}-${month}-${day} 00:00:00`;
     }
 
-    async formatDateSql( value ){}
+    async formatDateSql( value ){
+        let data = new Date(value)
+
+        let dia = data.getDate() > 9 ? data.getDate() : `0` + data.getDate();
+        let mesAux = data.getMonth() + 1;
+        let mes = mesAux > 9 ? mesAux : `0` + mesAux;
+        let ano = data.getFullYear();
+
+        return `${dia}/${mes}/${ano}`
+    }
     
     async md5( value ) {
         return crypto.createHash('md5')
