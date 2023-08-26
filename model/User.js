@@ -1,6 +1,7 @@
-let User = require('../model/User');
-let Utils =  require('../utils/index');
-class UserController{
+const Database = require('../dataBase/index');
+const utils = require("../utils");
+
+class User{
 
     async new( data ){
         let { login,password,email,name,foto } = data;
@@ -144,7 +145,7 @@ class UserController{
     async getByName( name ) {
 
         try{
-            let result = Database('usuario').select().where({ name: name })            
+                        
             
             if( result.length > 0 ){
                 return result
@@ -157,21 +158,22 @@ class UserController{
         }
     }
 
-    async getAll(req,res){
-        let { codigo,nome,cpf,dataNascimento } = req.body;
-
-        let params = {};
-
-        if( codigo ) params['codigo'] = codigo;
-        if( nome ) params['nome'] = nome;
-        if( cpf ) params['cpf'] = cpf;
-        if( dataNascimento ) params['dataNascimento'] = dataNascimento;
-
-        let results = await User.getAll(params);
+    async getAll(params){
         
-        res.json(results);
-    }
+        try{            
+            let results = await Database('usuario').select().where(params);
+            
+            for( let value of results ){
+                let dataNascimennto = value.dataNascimento;                
+                value.dataNascimento = await utils.formatDateSql(dataNascimennto);                                  
+            }
 
+            return results;
+        }catch( err ){
+            console.log(err)
+        }
+        
+    }
 }
 
-module.exports = new UserController()
+module.exports = new User()

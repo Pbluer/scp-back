@@ -32,6 +32,9 @@ class Utils{
     }
 
     async formatDateSql( value ){
+        if( !value ){
+            return ''
+        }
         let data = new Date(value)
 
         let dia = data.getDate() > 9 ? data.getDate() : `0` + data.getDate();
