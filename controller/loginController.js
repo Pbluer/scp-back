@@ -1,119 +1,142 @@
-let database = require('../dataBase/index');
+const Login = require('../model/Login');
 const utils = require('../utils');
 
-class Login{
+class LoginController{
     
-    async acessar( req,res ){
+    /** Função para logar no sistema. */
+    async logar( req,res ){
         let { login,senha } = req.body
         
         if( !login ){
             return res.json({
-                status: 401,                
+                status: 403,                
                 mensage: 'Login não informado.'
             })
             
-        }
+        }else{
 
-        if( !senha ){
-            return res.json({
-                status: 401,                
-                mensage: 'Senha não informado.'
-            })
-        }
-        
-        let senhaEncrypt = await utils.md5(senha);
-
-        try{
-
-            let result = await database('usuario').select().where({
-                login:login,
-                password: senhaEncrypt
-            });
-            
-            if( result[0] ){
-
+            if( !senha ){
                 return res.json({
-                    status: 200,
-                    mensage: 'Usuário logado com sucesso.'
-                });
-
+                    status: 403,                
+                    mensage: 'Senha não informado.'
+                })
             }else{
 
-                return res.json({
-                    status: 401,
-                    mensage: 'Usuário não cadastrado.'
-                });
+                let senhaEncrypt = await utils.md5(senha);
+                
+                let params = { 
+                    login:login,
+                    senha:senhaEncrypt
+                };
+                console.log('chegueoi')
+                try{
+                    let results = await Login.selecionar(params);                 
+
+                    if( results[0] ){
+        
+                        return res.json({
+                            status: 200,
+                            mensage: 'Usuário logado com sucesso.'
+                        });
+        
+                    }else{
+
+                        return res.json({
+                            status: 401,
+                            mensage: 'Usuário não cadastrado.'
+                        });
+        
+                    }
+                    
+                    
+                }catch( err ){
+                    return res.json({
+                        status: 400,
+                        mensage: err.sqlMessage,
+                    });            
+                }
 
             }
-            
-            
-        }catch( err ){
-            return res.json({
-                status: 400,
-                mensage: err.sqlMessage,
-            });            
         }
+
+        
+
     }
 
+    /** Função para cadastro de novos login.  */
     async cadastro( req,res ){
         let { login,senha } = req.body;
 
-        if( !login ){
+        if( login ){
+
+            let verificarLogin = await Login.getByLogin(login);
+            
+            if( verificarLogin ){
+                return res.json({
+                    status: 400,
+                    mensage: "Login já cadastrado.",
+                });
+            }
+            
+            if( senha ){              
+                let senhaEncrypt = await utils.md5(senha);
+                let params = {
+                    login:login,
+                    senha: senhaEncrypt
+                };
+        
+                try {        
+                    let results = Login.novo(params)
+
+                    if( results[0] ){
+            
+                        return res.json({
+                            status: 200,
+                            mensage: "Operação realizada com sucesso.",
+                        });
+            
+                    }else{
+            
+                        return res.json({
+                            status: 400,
+                            mensage: "Entre em contato com o suporte.",
+                        });
+            
+                    }
+        
+                } catch (err) {
+        
+                    if( err.errno == 1062 ){
+                        
+                        return res.json({
+                          status: 401,
+                          mensage: 'Usuário já cadastrado.',
+                        });
+        
+                    }else{
+                        return res.json({
+                            status: 400,
+                            mensage: err.sqlMessage,
+                        });
+                    }
+        
+                }  
+            }else{
+                return res.json({
+                    status: 401,                
+                    mensage: 'Senha não informado.'
+                })
+            }
+        
+
+        }else{
             return res.json({
                 status: 401,                
                 mensage: 'Login não informado.'
             })
         }
 
-        if( !senha ){
-            return res.json({
-                status: 401,                
-                mensage: 'Senha não informado.'
-            })
-        }
         
-        let senhaEncrypt = await utils.md5(senha);
-
-        try {
-
-          let result = await database("usuario").insert({
-            login: login,
-            password: senhaEncrypt,
-          });
-
-          if( result[0] ){
-
-            return res.json({
-                status: 200,
-                mensage: "Operação realizada com sucesso.",
-              });
-
-          }else{
-
-            return res.json({
-                status: 400,
-                mensage: "Entre em contato com o suporte.",
-            });
-
-          }
-
-        } catch (err) {
-
-            if( err.errno == 1062 ){
-                
-                return res.json({
-                  status: 401,
-                  mensage: 'Usuário já cadastrado.',
-                });
-
-            }else{
-                return res.json({
-                    status: 400,
-                    mensage: err.sqlMessage,
-                });
-            }
-
-        }
         
     }
 
@@ -287,4 +310,4 @@ class Login{
     }
 }
 
-module.exports = new Login()
+module.exports = new LoginController()

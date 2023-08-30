@@ -72,6 +72,25 @@ class Utils{
         
         return;
     }
+    
+    /** Função para formatar queryURL para array.
+     * 
+     * @param {object} value Parâmetro para formatar.
+     * 
+     * @return {Array} column
+     */
+    async formataQueryUrl(value){
+        if( !value ) return false;
+
+        let splits = value.split('&');
+        let column = [];
+        
+        for( let split of splits ){
+            column.push(split)
+        }
+
+        return column
+    }
 }
 
 module.exports = new Utils();
