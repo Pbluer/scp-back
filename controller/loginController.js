@@ -28,10 +28,9 @@ class LoginController{
                     login:login,
                     senha:senhaEncrypt
                 };
-                console.log('chegueoi')
                 try{
                     let results = await Login.autenticarLogin(params);                 
-
+                    
                     if( results[0] ){
         
                         return res.json({
@@ -46,8 +45,7 @@ class LoginController{
                             mensage: 'Usuário não cadastrado.'
                         });
         
-                    }
-                    
+                    }                    
                     
                 }catch( err ){
                     return res.json({
@@ -69,7 +67,7 @@ class LoginController{
 
         if( login ){
 
-            let verificarLogin = await Login.getByLogin(login);
+            let verificarLogin = await Login.recuperaPeloLogin(login);
             
             if( verificarLogin ){
                 return res.json({
@@ -86,7 +84,7 @@ class LoginController{
                     senha: senhaEncrypt          
                 };
                 
-                if( funcionario ) params.funcionario = funcionario;
+                if( funcionario ) params.funcionario = funcionario; 
 
                 try {        
                     let results = Login.novo(params)
@@ -143,40 +141,49 @@ class LoginController{
     }
 
     async desativar( req,res ){
-        let { codigo } = req.body;
+        let { codigo, login } = req.body;
 
-        if( codigo ){
+        if( login ){
 
-            try{
-
-                let result = database('usuario').update({
-                    ativo: 0
-                }).where({ codigo: codigo })
-
-                if( result[0] ){
-                    return res.json({
-                        status: 200,
-                        mensage: 'Operação realizada com sucesso.',
-                    });
-                }else{
+            if( codigo ){
+    
+                try{
+    
+                    let results = Login.atualizar(params);
+    
+                    if( result[0] ){
+                        return res.json({
+                            status: 200,
+                            mensage: 'Operação realizada com sucesso.',
+                        });
+                    }else{
+                        return res.json({
+                            status: 400,
+                            mensage: 'Entre em contato com o suporte',
+                        });
+                    }
+    
+                }catch(err){                    
                     return res.json({
                         status: 400,
-                        mensage: 'Entre em contato com o suporte',
-                    });
+                        mensage: err.sqlMessage ,
+                    });    
                 }
-
-            }catch(err){
                 
+            }else{
                 return res.json({
-                    status: 400,
-                    mensage: err.sqlMessage ,
-                });
-
+                    status:400,
+                    mensage:'Login não informado.'
+                })
             }
-            
-        }else{
 
+        }else{
+            return res.json({
+                status:400,
+                mensage:'Login não informado.'
+            })
         }
+
     }
 
     async editar( req,res ){

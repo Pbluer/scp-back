@@ -1,4 +1,5 @@
 let Database = require('../dataBase/index');
+const { param } = require('../router/router');
 const utils = require('../utils');
 
 class Login{
@@ -6,9 +7,9 @@ class Login{
     /** Função para selecionar login cadastrado*/
     async autenticarLogin( params ){
         try{
-            return await database('usuario').select().where(params);                         
+            return await Database('usuario').select().where(params);                         
         }catch( err ){
-            console.log(err.sqlMessage);        
+            console.log(err);        
             return {
                 status:400,
                 mensage:err.sqlMessage
@@ -20,6 +21,20 @@ class Login{
     async novo( params ){
         try {
             return await Database("usuario").insert(params);            
+        } catch (err){            
+            console.log(err)
+            return {
+                status: 400,
+                mensage: err.sqlMessage
+            }
+        }
+        
+    }
+
+    /** Função para desativar o login */
+    async desativar( params ){
+        try {
+            return await Database('usuario').update({ ativo: 0 }).where(params)       
         } catch (err){            
             console.log(err)
             return {
@@ -95,7 +110,7 @@ class Login{
         
     }
 
-    async getByLogin( login ) {
+    async recuperaPeloLogin( login ) {
 
         try{
             let result = await Database('usuario').select().where({ login: login })
