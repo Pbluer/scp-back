@@ -1,26 +1,31 @@
-let database = require('../dataBase/index');
+let Database = require('../dataBase/index');
 const utils = require('../utils');
 
 class Login{
     
     /** Função para selecionar login cadastrado*/
-    async selecionar( params ){
-
+    async autenticarLogin( params ){
         try{
-            let results = await database('usuario').select().where(params);
-            return results            
+            return await database('usuario').select().where(params);                         
         }catch( err ){
             console.log(err.sqlMessage);        
+            return {
+                status:400,
+                mensage:err.sqlMessage
+            }
         }
     }
 
     /** Fuunção adicionar novos logins */
     async novo( params ){
         try {
-            let results = await database("usuario").insert(params);
-            return results;      
+            return await Database("usuario").insert(params);            
         } catch (err){            
-            console.log(err.sqlMessage)
+            console.log(err)
+            return {
+                status: 400,
+                mensage: err.sqlMessage
+            }
         }
         
     }

@@ -4,7 +4,7 @@ const utils = require("../utils");
 class User {
 
   /** Function responsible to create new users. */
-  async register(params) {
+  async cadastro(params) {
     try {
       let results = await Database("usuario").insert(params);
       return results;
@@ -107,7 +107,7 @@ class User {
    * 
    * @return {object} results
   */
-  async get(column,where) {
+  async get(column = '',where) {
     
     try {
       let results = await Database("usuario").select(column).where(where);

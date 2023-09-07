@@ -30,7 +30,7 @@ class LoginController{
                 };
                 console.log('chegueoi')
                 try{
-                    let results = await Login.selecionar(params);                 
+                    let results = await Login.autenticarLogin(params);                 
 
                     if( results[0] ){
         
@@ -65,7 +65,7 @@ class LoginController{
 
     /** Função para cadastro de novos login.  */
     async cadastro( req,res ){
-        let { login,senha } = req.body;
+        let { login,senha,funcionario } = req.body;
 
         if( login ){
 
@@ -80,11 +80,14 @@ class LoginController{
             
             if( senha ){              
                 let senhaEncrypt = await utils.md5(senha);
+
                 let params = {
                     login:login,
-                    senha: senhaEncrypt
+                    senha: senhaEncrypt          
                 };
-        
+                
+                if( funcionario ) params.funcionario = funcionario;
+
                 try {        
                     let results = Login.novo(params)
 
@@ -121,6 +124,7 @@ class LoginController{
                     }
         
                 }  
+
             }else{
                 return res.json({
                     status: 401,                
@@ -134,9 +138,7 @@ class LoginController{
                 status: 401,                
                 mensage: 'Login não informado.'
             })
-        }
-
-        
+        }        
         
     }
 
