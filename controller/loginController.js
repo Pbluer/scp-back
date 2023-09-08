@@ -61,13 +61,13 @@ class LoginController{
 
     }
 
-    /** Função para cadastro de novos login.  */
+    /** Função para cadastro de novos login. */
     async cadastro( req,res ){
         let { login,senha,funcionario } = req.body;
 
         if( login ){
 
-            let verificarLogin = await Login.recuperaPeloLogin(login);
+            let verificarLogin = await Login.verificarLogin(login);
             
             if( verificarLogin ){
                 return res.json({
@@ -87,9 +87,9 @@ class LoginController{
                 if( funcionario ) params.funcionario = funcionario; 
 
                 try {        
-                    let results = Login.novo(params)
-
-                    if( results[0] ){
+                    let results = await Login.novo(params);
+                    console.log(results)
+                    if( results == 0 ){
             
                         return res.json({
                             status: 200,
@@ -140,23 +140,37 @@ class LoginController{
         
     }
 
-    async desativar( req,res ){
+    /** Função para exclução de Login. */
+    async excluir( req,res ){
         let { codigo, login } = req.body;
 
         if( login ){
 
+            let loginExiste = await Login.verificarLogin(login);
+            
+            if( !loginExiste ){
+                return res.json({
+                    status: 400,
+                    mensage: 'Login não cadastrado.'
+                });                
+            }   
+
             if( codigo ){
-    
+                
+                let params = {
+                    codigo: codigo
+                };
+
                 try{
-    
-                    let results = Login.atualizar(params);
-    
-                    if( result[0] ){
+                    
+                    let results = await Login.deletar(params);
+                                        
+                    if( results ){
                         return res.json({
                             status: 200,
                             mensage: 'Operação realizada com sucesso.',
                         });
-                    }else{
+                    }else{                        
                         return res.json({
                             status: 400,
                             mensage: 'Entre em contato com o suporte',
@@ -186,7 +200,7 @@ class LoginController{
 
     }
 
-    async editar( req,res ){
+    async atualizar( req,res ){
         let { login,senha,email,nome } = req.body;
 
         if( !login ){

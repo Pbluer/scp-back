@@ -71,7 +71,7 @@ class Utils{
         })
         
         return;
-    }
+    }   
     
     /** Função para formatar queryURL para array.
      * 

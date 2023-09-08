@@ -7,8 +7,8 @@ var FuncionarioController = require('../controller/funcionarioController');
 
 router.post('/login', LoginController.logar );
 router.post('/login/cadastro', LoginController.cadastro );
-router.put('/login/desativar', LoginController.desativar );
-router.put('/login/editar', LoginController.editar );
+router.post('/login/excluir', LoginController.excluir );
+router.put('/login/editar', LoginController.atualizar );
 
 router.post('/usuario/cadastro', UsuarioController.new );
 router.get('/usuario/busca', UsuarioController.getAll );
