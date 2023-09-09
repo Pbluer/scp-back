@@ -5,6 +5,7 @@ var LoginController = require('../controller/loginController');
 var UsuarioController = require('../controller/UsuarioController');
 var FuncionarioController = require('../controller/funcionarioController');
 
+router.get('/login', LoginController.buscar );
 router.post('/login', LoginController.logar );
 router.post('/login/cadastro', LoginController.cadastro );
 router.post('/login/excluir', LoginController.excluir );

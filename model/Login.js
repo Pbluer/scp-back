@@ -64,6 +64,18 @@ class Login{
         }
     }
 
+    async modificar(codigo,params) {        
+        try {
+            return await Database('usuario').update(params).where({ codigo: codigo })
+        } catch (err){            
+            console.log(err)
+            return {
+                status: 400,
+                mensage: err.sqlMessage
+            }
+        }
+    }
+
     async getByEmail( email ) {
 
         try{
@@ -76,22 +88,24 @@ class Login{
             }
 
         }catch( err ){
+            console.log(err)
             return {
-                status:400,
-                mensage:err.sqlMessage
+                status: 400,
+                mensage: err.sqlMessage
             }
         }
     }
 
-    async getAll(req,res){
+    async getAll(params){
         
         try{
-            let result = await Database('usuario',).select(['login','email']);
-
-            let data = result[0]
-            res.json(data)
+           return await Database('usuario').select().where(params);
         }catch( err ){
             console.log(err)
+            return {
+                status: 400,
+                mensage: err.sqlMessage
+            }
         }
         
     }

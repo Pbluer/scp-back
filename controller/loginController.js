@@ -88,8 +88,8 @@ class LoginController{
 
                 try {        
                     let results = await Login.novo(params);
-                    console.log(results)
-                    if( results == 0 ){
+                    
+                    if( results[0]){
             
                         return res.json({
                             status: 200,
@@ -200,8 +200,9 @@ class LoginController{
 
     }
 
+    /** Função para atualizar os dados existente.  */
     async atualizar( req,res ){
-        let { login,senha,email,nome } = req.body;
+        let { codigo,login,senha,funcionario } = req.body;
 
         if( !login ){
             return res.json({
@@ -217,32 +218,20 @@ class LoginController{
             })
         }
         
-        if( !email ){
-            return res.json({
-                status: 401,                
-                mensage: 'Email não informado.'
-            })
-        }
-
-        if( !nome ){
-            return res.json({
-                status: 401,                
-                mensage: 'Nome não informado.'
-            })
-        }
-
         let senhaEncrypt = await utils.md5(senha);
+
+        let params = {
+            login: login,
+            senha: senhaEncrypt
+        }
+
+        if( funcionario ) params.funcionario = funcionario;
 
         try{
             
-            let result = await database('usuario').where({ codigo: codigo }).update({
-                login: login,
-                password: senhaEncrypt,
-                email: email,
-                name: nome
-            });
-
-            if( result[0] ){
+            let results = await Login.modificar(codigo,params);
+            
+            if( results ){
 
                 return res.json({
                     status: 200,
@@ -265,64 +254,11 @@ class LoginController{
         
     }
 
-    async getByLogin( login ) {
+    async buscar(req,res){
+        let { codigo } = req.body;
 
         try{
-            let result = await Database('usuario').select().where({ login: login })
-
-            if( result.length > 0 ){
-                return result
-            }else{
-                false;
-            }
-
-        }catch( err ){
-            return {
-                status:400,
-                mensage:err.sqlMessage
-            }
-        }
-    }
-
-    async getByEmail( email ) {
-
-        try{
-            let result = await Database('usuario').select().where({ email: email })
-
-            if( result.length ){
-                return reuslt
-            }else{
-                false;
-            }
-
-        }catch( err ){
-            return {
-                status:400,
-                mensage:err.sqlMessage
-            }
-        }
-    }
-
-    async getByName( name ) {
-
-        try{
-            let result = Database('usuario').select().where({ name: name })            
-            
-            if( result.length > 0 ){
-                return result
-            }else{
-                false;
-            }
-
-        }catch( err ){
-            console.log(err)
-        }
-    }
-
-    async getAll(req,res){
-        
-        try{
-            let result = await Database('usuario',).select(['login','email']);
+            let result = await Login.getAll(params);
 
             let data = result[0]
             res.json(data)
