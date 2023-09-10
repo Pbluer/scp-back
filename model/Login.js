@@ -64,7 +64,8 @@ class Login{
         }
     }
 
-    async modificar(codigo,params) {        
+    /** Função para atualizar os dados existente. */
+    async modificar(codigo,params) {
         try {
             return await Database('usuario').update(params).where({ codigo: codigo })
         } catch (err){            
@@ -76,26 +77,7 @@ class Login{
         }
     }
 
-    async getByEmail( email ) {
-
-        try{
-            let result = await Database('usuario').select().where({ email: email })
-
-            if( result.length ){
-                return reuslt
-            }else{
-                false;
-            }
-
-        }catch( err ){
-            console.log(err)
-            return {
-                status: 400,
-                mensage: err.sqlMessage
-            }
-        }
-    }
-
+    /** Função para retornar os dados cadastrados. */
     async getAll(params){
         
         try{

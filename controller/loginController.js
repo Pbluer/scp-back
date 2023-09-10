@@ -254,19 +254,32 @@ class LoginController{
         
     }
 
+    /** Função para buscar os dados cadastrados. */
     async buscar(req,res){
         let { codigo } = req.body;
 
-        try{
-            let result = await Login.getAll(params);
+        let params = {};
 
-            let data = result[0]
-            res.json(data)
+        if( codigo ) params.codigo = codigo;
+
+        try{
+            let results = await Login.getAll(params);      
+            
+            if( results[0] ){
+                return res.json(results)
+            }else{
+                return res.json({
+                    status: 400,
+                    mensage: "Nenhum login encontrado."
+                })
+            }
+
         }catch( err ){
             console.log(err)
         }
         
     }
+    
 }
 
 module.exports = new LoginController()
