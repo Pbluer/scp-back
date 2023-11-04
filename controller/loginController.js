@@ -1,5 +1,6 @@
+const Auth = require('../middleware/authenticate')
+const Utils = require('../Utils');
 const Login = require('../model/Login');
-const utils = require('../utils');
 
 class LoginController{
     
@@ -22,7 +23,7 @@ class LoginController{
                 })
             }else{
 
-                let senhaEncrypt = await utils.md5(senha);
+                let senhaEncrypt = await Utils.md5(senha);
                 
                 let params = { 
                     login:login,
@@ -77,7 +78,7 @@ class LoginController{
             }
             
             if( senha ){              
-                let senhaEncrypt = await utils.md5(senha);
+                let senhaEncrypt = await Utils.md5(senha);
 
                 let params = {
                     login:login,
@@ -218,7 +219,7 @@ class LoginController{
             })
         }
         
-        let senhaEncrypt = await utils.md5(senha);
+        let senhaEncrypt = await Utils.md5(senha);
 
         let params = {
             login: login,
@@ -256,6 +257,10 @@ class LoginController{
 
     /** Função para buscar os dados cadastrados. */
     async buscar(req,res){
+        
+        let authenticate = Auth.verifyAuthenticate();
+
+        return
         let { codigo } = req.body;
 
         let params = {};

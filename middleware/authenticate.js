@@ -1,43 +1,41 @@
 let Database = require('../dataBase/index');
+let jwt = require('jsonwebtoken');
+const secretKey = '202cb962ac59075b964b07152d234b70';
 
-/** Classe para autenticação */
-class Authenticate{
-
-    /**
-     * @param string token
-     */
-    __construction(token){
-        console.log(token)
-        this.token = token   
-    }
-
-    async usuario(codigo){
-        const token = this.token;
-
-        try{
-            let results = await Database('permission').select().where({ token: token, usuario: codigo });
-      
-            if( results[0] ){
-                let tokenResult = results[0];
+/**
+ * Class to authenticate access
+*/
+class Authenticate{ 
     
-                if( tokenResult == this.token ){
-                    return true;
-                }else{
-                    return false;
-                }  
-
-            }
-            
-        }catch(err){
-            console.log(err)
-            return {
-                status: 403,
-                mensage: 'Error ao validar token'
-            }   
-        }
+    /**
+     * Function to create authenticate to new user
+     * 
+     * @param {Object} payload 
+     * */
+    async createToken(payload){
         
-    }
-}
+        let options = {
+            algorithm: 'HS256',
+            expiresIn: '1h',
+            //iss: emissor
+        };
 
+        let results = jwt.sign( payload,secretKey,options );
+        
+        return results;
+    }
+    
+    async verifyAuthenticate(){
+        let teste = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RpZ28iOjEsImlhdCI6MTY5OTEzNTUyOSwiZXhwIjoxNjk5MTM5MTI5fQ.LJZIoWPm8FQiXQyPgyNtW527wrYgcVkVTt_C2Ec_V7k';
+
+        let results = jwt.verify(teste,secretKey, (err,decoded) => {
+            
+            if( !err ){
+                return decoded
+            }
+        });
+       
+    }   
+}
 
 module.exports = new Authenticate()
