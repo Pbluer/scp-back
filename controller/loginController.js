@@ -4,8 +4,8 @@ const Login = require('../model/Login');
 
 class LoginController{
     
-    /** Função para logar no sistema. */
-    async logar( req,res ){
+    /** Function to login in the system */
+    async login( req,res ){
         let { login,senha } = req.body
         
         if( !login ){
@@ -62,8 +62,8 @@ class LoginController{
 
     }
 
-    /** Função para cadastro de novos login. */
-    async cadastro( req,res ){
+    /** Function to create new user login */
+    async register( req,res ){
         let { login,senha,funcionario } = req.body;
 
         if( login ){
@@ -141,8 +141,8 @@ class LoginController{
         
     }
 
-    /** Função para exclução de Login. */
-    async excluir( req,res ){
+    /** Function to delete user login */
+    async delete( req,res ){
         let { codigo, login } = req.body;
 
         if( login ){
@@ -201,8 +201,8 @@ class LoginController{
 
     }
 
-    /** Função para atualizar os dados existente.  */
-    async atualizar( req,res ){
+    /** Function to update user login data  */
+    async update( req,res ){
         let { codigo,login,senha,funcionario } = req.body;
 
         if( !login ){
@@ -255,8 +255,8 @@ class LoginController{
         
     }
 
-    /** Função para buscar os dados cadastrados. */
-    async buscar(req,res){
+    /** Function to search data of a user login */
+    async search(req,res){
         
         let authenticate = Auth.verifyAuthenticate();
 

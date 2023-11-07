@@ -1,6 +1,6 @@
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken')
 const fs = require('fs')
+
 class Utils{
 
     async getDateTimeSql() {
@@ -51,13 +51,6 @@ class Utils{
             .digest('hex');
     }
 
-    async tokenLogin( data ){
-        // gera um usando o login token que irá expirar em uma hora
-        // var decoded = jwt.verify(webTokenEncript, 'imagineUmaChaveSecreta');
-        
-        return jwt.sign({ data: data }, 'imagineUmaChaveSecreta', { expiresIn: '1h' });
-    }
-    
     async imageBase64( path,type ){
         let bitmapString = (fs.readFileSync(path)).toString('base64');
         this.deleteUpload(path);
