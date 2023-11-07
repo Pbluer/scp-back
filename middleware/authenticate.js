@@ -1,6 +1,6 @@
 let Database = require('../dataBase/index');
 let jwt = require('jsonwebtoken');
-const secretKeySystem = '202cb962ac59075b964b07152d234b70';
+const _secretKeySystem = '202cb962ac59075b964b07152d234b70';
 
 /**
  * Class to authenticate access
@@ -31,19 +31,31 @@ class Authenticate{
      * @param {String} token
      * @return {object}
      * */
-    async verifyAuthenticate(token){
-        let secretKey = token ?? secretKeySystem;
+    async verifyAuthenticate(token){      
 
-        let results = jwt.verify(teste,secretKey, (err,decoded) => {
+        let results = jwt.verify(token,_secretKeySystem, (err,decoded) => {
             
-            if( err ){
-                console.log(err)
+            if( err ){               
                 return {
                     status: 400,
                     mensage: err.name
                 }
             }else{
-                return decoded
+                
+                let userToken = this.getTokenUser( decoded.codigo );
+
+                if( userToken == decoded.token ){
+                    return {
+                        status: 200,
+                        mensage: "Usuário verificado."
+                    }
+                }else{
+                    return {
+                        status: 403,
+                        mensage: "Usuário não validado."
+                    }
+                }
+                
             }
 
         });
@@ -58,7 +70,7 @@ class Authenticate{
      * 
      * @return {String}
      */
-    async getTokenUser(codigo){        
+    async getTokenUser(codigo){
         try{
             return await Database("userToken").select().where({codigo: codigo})
         }catch(err){

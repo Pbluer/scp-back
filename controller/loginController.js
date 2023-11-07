@@ -260,9 +260,11 @@ class LoginController{
         
         let authenticate = Auth.verifyAuthenticate();
 
-        if( !authenticate.status ){            
-            let { codigo } = authenticate;
+        if( authenticate.status !== 200){
+            return res.json( authenticate )
         }
+        
+        let { codigo } = req.body;
 
         let params = {};
 
