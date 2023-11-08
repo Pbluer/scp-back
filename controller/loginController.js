@@ -78,11 +78,13 @@ class LoginController{
             }
             
             if( senha ){              
+                let token = await Utils.createToken();
                 let senhaEncrypt = await Utils.md5(senha);
-
+                
                 let params = {
                     login:login,
-                    senha: senhaEncrypt          
+                    senha: senhaEncrypt ,
+                    token: token        
                 };
                 
                 if( funcionario ) params.funcionario = funcionario; 

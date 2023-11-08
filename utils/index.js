@@ -1,8 +1,9 @@
 const crypto = require('crypto');
+const cryptRandom = require('crypto-random-string')
 const fs = require('fs')
 
 class Utils{
-
+    
     async getDateTimeSql() {
 
         let date = new Date()
@@ -55,6 +56,10 @@ class Utils{
         let bitmapString = (fs.readFileSync(path)).toString('base64');
         this.deleteUpload(path);
         return `data:${type};base64,` + bitmapString;
+    }
+
+    async createToken(){
+        return cryptRandom({ length: 200 })
     }
 
     async deleteUpload( path ){
