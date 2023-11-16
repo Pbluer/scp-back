@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const cryptRandom = require('crypto-random-string')
+const cryptRandom = import('crypto-random-string')
 const fs = require('fs')
 
 class Utils{

@@ -64,52 +64,54 @@ class LoginController{
 
     /** Function to create new user login */
     async register( req,res ){
-        let { login,senha,funcionario } = req.body;
-
+        let { category,identification,description,login,password } = req.body;
+   
         if( login ){
 
-            let verificarLogin = await Login.verificarLogin(login);
-            
-            if( verificarLogin ){
+            let loginVerify = await Login.verify(login);
+           
+            if( loginVerify ){
                 return res.json({
                     status: 400,
                     mensage: "Login já cadastrado.",
                 });
             }
             
-            if( senha ){              
-                let token = await Utils.createToken();
-                let senhaEncrypt = await Utils.md5(senha);
+            if( password ){              
+                //let loginToken = await Utils.createToken();
+                let loginToken = `token`;
+                let passwordEncrypt = await Utils.md5(password);
                 
                 let params = {
-                    login:login,
-                    senha: senhaEncrypt ,
-                    token: token        
-                };
-                
-                if( funcionario ) params.funcionario = funcionario; 
-
+                    category: category,
+                    password: passwordEncrypt,
+                    identification: identification,
+                    login: login,
+                    description: description,
+                    token: loginToken        
+                };               
+               
                 try {        
-                    let results = await Login.novo(params);
-                    
+                    let results = await Login.newLogin(params);
+
                     if( results[0]){
-            
+                        
                         return res.json({
                             status: 200,
                             mensage: "Operação realizada com sucesso.",
                         });
-            
+                        
                     }else{
-            
+                        
                         return res.json({
                             status: 400,
                             mensage: "Entre em contato com o suporte.",
                         });
-            
+                        
                     }
-        
+                    
                 } catch (err) {
-        
+                           
                     if( err.errno == 1062 ){
                         
                         return res.json({

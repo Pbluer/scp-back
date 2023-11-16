@@ -16,7 +16,7 @@ class Login{
     }
 
     /** Fuunção adicionar novos logins */
-    async novo( params ){
+    async newLogin( params ){
         try {
             return await Database("usuario").insert(params);            
         } catch (err){            
@@ -44,10 +44,10 @@ class Login{
     }
 
     /** Função para verificar se o login existe */
-    async verificarLogin( login ) {
+    async verify( identification ) {
 
         try{
-            let results = await Database('usuario').select().where({ login: login })
+            let results = await Database('usuario').select().where({ identification: identification })
          
             if( results.length > 0 ){
                 return results
