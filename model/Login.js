@@ -44,10 +44,10 @@ class Login{
     }
 
     /** Função para verificar se o login existe */
-    async verify( identification ) {
+    async verify( login ) {
 
         try{
-            let results = await Database('usuario').select().where({ identification: identification })
+            let results = await Database('usuario').select().where({ login: login })
          
             if( results.length > 0 ){
                 return results

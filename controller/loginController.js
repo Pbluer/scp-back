@@ -85,7 +85,7 @@ class LoginController{
                 let params = {
                     category: category,
                     password: passwordEncrypt,
-                    identification: identification,
+                    id: identification,
                     login: login,
                     description: description,
                     token: loginToken        
