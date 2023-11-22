@@ -5,8 +5,8 @@ const Login = require('../model/Login');
 class LoginController{
     
     /** Function to login in the system */
-    async login( req,res ){
-        let { login,senha } = req.body
+    async access( req,res ){
+        let { login,password } = req.body
         
         if( !login ){
             return res.json({
@@ -16,27 +16,36 @@ class LoginController{
             
         }else{
 
-            if( !senha ){
+            if( !password ){
                 return res.json({
                     status: 403,                
-                    mensage: 'Senha não informado.'
+                    mensage: 'Senha não informada.'
                 })
             }else{
 
-                let senhaEncrypt = await Utils.md5(senha);
-                
+                let passwordEncrypt = await Utils.md5(password);                
+
                 let params = { 
                     login:login,
-                    senha:senhaEncrypt
+                    password:passwordEncrypt
                 };
+
                 try{
+
                     let results = await Login.autenticarLogin(params);                 
-                    
-                    if( results[0] ){
-        
+
+                    if( results[0] ){               
+                        let result = results[0];
+
+                        let jwt = await Auth.createToken({
+                            codigo: result.codigo,
+                            category: result.category,
+                        })
+                       
                         return res.json({
                             status: 200,
-                            mensage: 'Usuário logado com sucesso.'
+                            mensage: 'Usuário logado com sucesso.',
+                            jwt: jwt
                         });
         
                     }else{
@@ -64,7 +73,7 @@ class LoginController{
 
     /** Function to create new user login */
     async register( req,res ){
-        let { category,identification,description,login,password } = req.body;
+        let { category,identification,name,login,password } = req.body;
    
         if( login ){
 
@@ -87,7 +96,7 @@ class LoginController{
                     password: passwordEncrypt,
                     id: identification,
                     login: login,
-                    description: description,
+                    name: name,
                     token: loginToken        
                 };               
                

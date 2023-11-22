@@ -21,7 +21,7 @@ class Authenticate{
             //iss: emissor
         };
 
-        let results = jwt.sign( payload,secretKey,options );
+        let results = jwt.sign( payload,_secretKeySystem,options );
         
         return results;
     }
