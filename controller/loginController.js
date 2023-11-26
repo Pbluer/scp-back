@@ -88,16 +88,17 @@ class LoginController{
             
             if( password ){              
                 //let loginToken = await Utils.createToken();
-                let loginToken = `token`;
                 let passwordEncrypt = await Utils.md5(password);
-                
+                let datetime = await Utils.getDateTimeSql()
+                let token = await Utils.md5( datetime + login );
+                                
                 let params = {
                     category: category,
                     password: passwordEncrypt,
                     id: identification,
                     login: login,
                     name: name,
-                    token: loginToken        
+                    token: token        
                 };               
                
                 try {        

@@ -13,13 +13,14 @@ class Authenticate{
      * @param {Object} payload 
      * @return {String}
      * */
-    async createToken(payload){
+    async createToken(payload, expire = false){
         
         let options = {
-            algorithm: 'HS256',
-            expiresIn: '1h',
+            algorithm: 'HS256',            
             //iss: emissor
         };
+
+        if(expire) options.expiresIn = '1h'
 
         let results = jwt.sign( payload,_secretKeySystem,options );
         

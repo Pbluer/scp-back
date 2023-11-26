@@ -1,5 +1,5 @@
 let Funcionario = require('../model/funcionario');
-let Utils =  require('../utils/index');
+let Utils = require('../Utils/index.js');
 
 class FuncionarioController{
 

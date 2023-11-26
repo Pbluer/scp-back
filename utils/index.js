@@ -4,7 +4,12 @@ const fs = require('fs')
 
 class Utils{
     
-    async getDateTimeSql() {
+    /**
+     * Function to get the current date time
+     * @param {Boolean} Object Return a object or string
+     * @return {String|Object} 
+     */
+    async getDateTimeSql(object = false) {
 
         let date = new Date()
 
@@ -17,10 +22,15 @@ class Utils{
         let min =  date.getMinutes() > 9 ? date.getMinutes() : `0` + date.getMinutes();
         let sec =  date.getSeconds() > 9 ? date.getSeconds() : `0` + date.getSeconds();
 
-        return `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+        return object ? date : `${year}-${month}-${day} ${hour}:${min}:${sec}`;
     }
 
-    async getDateSql() {
+    /**
+     * Function to get the current date
+     * @param {Boolean} object Return a object or string
+     * @return {String|Object} 
+     */
+    async getDateSql(object) {
 
         let date = new Date()
 
@@ -29,13 +39,17 @@ class Utils{
         let month = monthAux > 9 ? monthAux : `0` + monthAux;
         let year = date.getFullYear();
 
-        return ` ${year}-${month}-${day} 00:00:00`;
+        return object ? date: `${year}-${month}-${day} 00:00:00`;
     }
 
+    /**
+     * Function to format object datime time into dd/mm/yyyy
+     * @param {Object} Object
+     * @return {String}
+     *  */
     async formatDateSql( value ){
-        if( !value ){
-            return ''
-        }
+        if( !value ) return ''
+
         let data = new Date(value)
 
         let dia = data.getDate() > 9 ? data.getDate() : `0` + data.getDate();
@@ -58,7 +72,7 @@ class Utils{
         return `data:${type};base64,` + bitmapString;
     }
 
-    async createToken(){
+    createToken(){
         return cryptRandom({ length: 200 })
     }
 
